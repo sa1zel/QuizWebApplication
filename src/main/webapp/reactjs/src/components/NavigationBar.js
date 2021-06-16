@@ -4,9 +4,21 @@ import {Navbar, Nav} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faUserPlus, faSignInAlt, faSignOutAlt} from '@fortawesome/free-solid-svg-icons';
-import {logoutUser} from '../services/index';
+import {logoutUser, authenticateUser} from '../services/index';
 
 class NavigationBar extends Component {
+    componentDidMount = () => {
+        const { isLoggedIn } = this.props.auth;
+        if(!isLoggedIn) {
+           const email = localStorage.getItem("email");
+           const password = localStorage.getItem("password");
+           if(email && password) {
+               const {authenticateUser} = this.props;
+               authenticateUser(email, password);
+           }
+        }
+    }
+
     logout = () => {
         this.props.logoutUser();
     };
@@ -16,8 +28,8 @@ class NavigationBar extends Component {
             <>
                 <div className="mr-auto"></div>
                 <Nav className="navbar-right">
-                    <Link to={"register"} className="nav-link"><FontAwesomeIcon icon={faUserPlus} /> Register</Link>
-                    <Link to={"login"} className="nav-link"><FontAwesomeIcon icon={faSignInAlt} /> Login</Link>
+                    <Link to="/register" className="nav-link"><FontAwesomeIcon icon={faUserPlus} /> Register</Link>
+                    <Link to="/login" className="nav-link"><FontAwesomeIcon icon={faSignInAlt} /> Login</Link>
                 </Nav>
             </>
         );
@@ -25,11 +37,11 @@ class NavigationBar extends Component {
         const userLinks = (
             <>
                 <Nav className="mr-auto">
-                    <Link to={"tests"} className="nav-link">Testing</Link>
-                    <Link to={"results"} className="nav-link">Results</Link>
+                    <Link to={"/tests"} className="nav-link">Testing</Link>
+                    <Link to={"/results"} className="nav-link">Results</Link>
                 </Nav>
                 <Nav className="navbar-right">
-                    <Link to={"logout"} className="nav-link" onClick={this.logout}><FontAwesomeIcon icon={faSignOutAlt} /> Logout</Link>
+                    <Link to={"/logout"} className="nav-link" onClick={this.logout}><FontAwesomeIcon icon={faSignOutAlt} /> Logout</Link>
                 </Nav>
             </>
         );
@@ -72,7 +84,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        logoutUser: () => dispatch(logoutUser())
+        logoutUser: () => dispatch(logoutUser()),
+        authenticateUser: (email, password) => dispatch(authenticateUser(email, password))
     };
 };
 

@@ -16,12 +16,42 @@ export const saveQuiz = quiz => {
     };
 };
 
+export const saveUserQuiz = quiz => {
+    return dispatch => {
+        dispatch({
+            type: BT.SAVE_USER_QUIZ_REQUEST
+        });
+        axios.post("http://localhost:8080/api/tests/results/result", quiz)
+            .then(response => {
+                dispatch(userQuizSuccess(response.data));
+            })
+            .catch(error => {
+                dispatch(quizFailure(error));
+            });
+    };
+};
+
 export const fetchQuiz = quizId => {
     return dispatch => {
         dispatch({
             type: BT.FETCH_QUIZ_REQUEST
         });
         axios.get("http://localhost:8080/api/tests/test" + quizId)
+            .then(response => {
+                dispatch(quizSuccess(response.data));
+            })
+            .catch(error => {
+                dispatch(quizFailure(error));
+            });
+    };
+};
+
+export const fetchUserQuiz = quizId => {
+    return dispatch => {
+        dispatch({
+            type: BT.FETCH_USER_QUIZ_REQUEST
+        });
+        axios.get("http://localhost:8080/api/tests/test/user/" + quizId)
             .then(response => {
                 dispatch(quizSuccess(response.data));
             })
@@ -64,6 +94,12 @@ export const deleteQuiz = quizId => {
 const quizSuccess = quiz => {
     return {
         type: BT.QUIZ_SUCCESS,
+        payload: quiz
+    };
+};
+const userQuizSuccess = quiz => {
+    return {
+        type: BT.USER_QUIZ_SUCCESS,
         payload: quiz
     };
 };

@@ -73,7 +73,7 @@ class QuizList extends Component {
             } else {
                 this.setState({"show": false});
             }
-        }, 10000);
+        }, 2000);
     };
 
     changePage = event => {

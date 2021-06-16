@@ -12,7 +12,8 @@ export const authenticateUser = (email, password) => {
         axios.post("http://localhost:8080/api/login")
             .then(response => {
                 dispatch(success(true, response.data));
-
+                localStorage.setItem("email", email);
+                localStorage.setItem("password", password);
             })
             .catch(error => {
                 console.error(error);
@@ -22,6 +23,8 @@ export const authenticateUser = (email, password) => {
 };
 
 export const logoutUser = () => {
+    localStorage.removeItem("email");
+    localStorage.removeItem("password");
     return dispatch => {
         dispatch({
             type: AT.LOGOUT_REQUEST
